@@ -39,7 +39,7 @@ ACKNOWLEDGEMENTS
 if __name__=="__main__":
   from toroidalsom import toroidalSOM
 
-  from numpy import linspace,cos,sin,array,pi
+  from numpy import linspace,cos,sin,array,pi,meshgrid
   from numpy.random import randn,seed
 
   from os.path import join as osjoin
@@ -97,4 +97,4 @@ if __name__=="__main__":
   ax.scatter(Y[...,0],Y[...,1],Y[...,2],color='r',marker='o',s=36,lw=2)
   ax.plot_wireframe(Z[...,0],Z[...,1],Z[...,2],alpha=0.1)
   axis('off')
-  savefig(osjoin("..","figure","toroidalsomexample.png"))  
+  savefig(osjoin("..","figure","toroidalsomexample.png"))
