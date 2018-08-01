@@ -39,7 +39,7 @@ ACKNOWLEDGEMENTS
 if __name__=="__main__":
   from toroidalsom import toroidalSOM
 
-  from numpy import linspace,sin,array,pi
+  from numpy import linspace,cos,sin,array,pi
   from numpy.random import randn,seed
 
   from os.path import join as osjoin
@@ -63,10 +63,38 @@ if __name__=="__main__":
   som.fit(x0,tfac,tscale,alpha0)
 
   from pylab import figure,scatter,savefig,axis
-
+  from mpl_toolkits.mplot3d import Axes3D
+  
   # Plot
-  figure()
+  fig = figure(figsize=(12,8))
+  ax = fig.add_subplot(121)
   scatter(*x0.T,color='b',marker='x',s=9,lw=1,alpha=0.5)
-  scatter(*som.xmap,color='r',marker='+',s=36,lw=1)
+  scatter(*som.xmap,color='r',marker='o',s=36,lw=1)
   axis('off')
-  savefig(osjoin("..","figure","toroidalsomexample.png"))
+  
+  # Lets make a nice 3D view of the map
+  # Convert to a ring torus
+  X = array([
+    (2 + cos(x0[...,0]))*cos(x0[...,1]),
+    (2 + cos(x0[...,0]))*sin(x0[...,1]),
+    -sin(x0[...,0])
+  ]).T # Training data
+  Y = array([
+    (2 + cos(som.xmap[0]))*cos(som.xmap[1]),
+    (2 + cos(som.xmap[0]))*sin(som.xmap[1]),
+    -sin(som.xmap[0])
+  ]).T # SOM
+  theta = linspace(0.,2.*pi,100)
+  u,v = meshgrid(theta,theta)
+  Z = array([
+    (2 + cos(u))*cos(v),
+    (2 + cos(u))*sin(v),
+    -sin(u)
+  ]).T # The torus
+  
+  ax = fig.add_subplot(122, projection='3d')
+  ax.scatter(X[...,0],X[...,1],X[...,2],color='b',marker='x',s=9,lw=1,alpha=0.5)
+  ax.scatter(Y[...,0],Y[...,1],Y[...,2],color='r',marker='o',s=36,lw=2)
+  ax.plot_wireframe(Z[...,0],Z[...,1],Z[...,2],alpha=0.1)
+  axis('off')
+  savefig(osjoin("..","figure","toroidalsomexample.png"))  
